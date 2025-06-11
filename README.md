@@ -1,6 +1,4 @@
-# RemapLWin
-RemapLWin to PowerToys Run
-
+# RemapLWin to PowerToys Run
 1× Win tap-> PowerToys Run
 
 2× Win tap fast -> Start Menu
