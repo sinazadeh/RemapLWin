@@ -1,36 +1,33 @@
-; Use global variable to control timer
-global winTapTimerRunning := false
+; Adjust this threshold (in ms) to taste:
+threshold := 300
+
+; Stores the time of the last Left-Win press
+global lastWinPress := 0
 
 *LWin::
-    ; If timer is already running → this is a double tap
-    if (winTapTimerRunning) {
-        SetTimer, RunPowerToysRun, Off
-        winTapTimerRunning := false
-        ; Trigger Start Menu
+    current := A_TickCount
+    if (current - lastWinPress < threshold) {
+        ; Double-tap detected → cancel single-tap timer and open Start Menu
+        SetTimer, SingleTapAction, Off
+        lastWinPress := 0
         Send {LWin}
     } else {
-        ; First tap → start timer and wait
-        winTapTimerRunning := true
-        SetTimer, RunPowerToysRun, -300
+        ; First tap → schedule single-tap action
+        lastWinPress := current
+        SetTimer, SingleTapAction, -%threshold%
     }
 return
 
-; Keep Windows + D functionality for minimizing windows
+; Keep Win+D intact
 LWin & d::
-    ; Cancel the single tap timer if it's running
-    if (winTapTimerRunning) {
-        SetTimer, RunPowerToysRun, Off
-        winTapTimerRunning := false
-    }
-    ; Send the normal Windows + D command
-    Send {LWin down}d{LWin up}
+    ; Cancel the scheduled single-tap action
+    SetTimer, SingleTapAction, Off
+    lastWinPress := 0
+    Send #d
 return
 
-RunPowerToysRun:
-    ; If this function runs, it's a single tap
-    winTapTimerRunning := false
-    
-    ; Option 1: Use PowerToys Run's default hotkey (fastest)
-    Send {Alt Down}{Space}{Alt Up}
-
+SingleTapAction:
+    ; Timer fired → it was a single tap
+    lastWinPress := 0
+    Send !{Space}  ; PowerToys Run
 return
