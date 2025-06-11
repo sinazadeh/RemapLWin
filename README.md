@@ -5,4 +5,6 @@ RemapLWin to PowerToys Run
 
 2× Win tap fast -> Start Menu
 
-Run Shell:startup and put the file in the opened folder.
+Steps:
+- Install [AutoHotkey V2.0](https://www.autohotkey.com/)
+- Run Shell:startup and put the file in the opened folder.
